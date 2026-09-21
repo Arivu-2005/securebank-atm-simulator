@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SecureBank ATM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="lobby">
+  <div class="bank-label"><span class="dot"></span>SECUREBANK &nbsp;·&nbsp; ATM 24/7</div>
+
+  <div class="machine">
+    <div class="brand-strip">
+      <span class="name">SecureBank</span>
+      <span class="chip"><span></span><span></span><span></span></span>
+    </div>
+
+    <div class="screen-frame">
+      <div class="screen" id="screen">
+        <div class="screen-glow"></div>
+
+        <!-- INSERT CARD VIEW -->
+        <div class="view active" id="view-insert">
+          <p class="screen-title">WELCOME</p>
+          <p class="screen-sub">Please insert your card to begin.</p>
+          <div class="card-slot-wrap">
+            <div class="slot"><div class="card" id="card"></div></div>
+            <button class="btn-primary" id="btn-insert">Insert Card</button>
+            <div class="tap-hint">— or tap to simulate insertion —</div>
+          </div>
+        </div>
+
+        <!-- READING CARD -->
+        <div class="view" id="view-reading">
+          <div style="margin:auto; text-align:center;">
+            <div class="spinner"></div>
+            <p class="screen-sub" style="margin:0;">Reading card…</p>
+          </div>
+        </div>
+
+        <!-- PIN VIEW -->
+        <div class="view" id="view-pin">
+          <p class="screen-title">ENTER PIN</p>
+          <p class="screen-sub" id="pin-welcome">Enter your 4-digit PIN.</p>
+          <div class="pin-dots" id="pin-dots">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+          </div>
+          <div class="error-text" id="pin-error"></div>
+          <div class="keypad" id="pin-keypad">
+            <button class="key" data-k="1">1</button><button class="key" data-k="2">2</button><button class="key" data-k="3">3</button>
+            <button class="key" data-k="4">4</button><button class="key" data-k="5">5</button><button class="key" data-k="6">6</button>
+            <button class="key" data-k="7">7</button><button class="key" data-k="8">8</button><button class="key" data-k="9">9</button>
+            <button class="key wide" data-k="cancel">CANCEL</button><button class="key" data-k="0">0</button><button class="key wide" data-k="back">⌫</button>
+          </div>
+        </div>
+
+        <!-- MAIN MENU -->
+        <div class="view" id="view-menu">
+          <p class="screen-title" id="menu-greeting">HELLO</p>
+          <p class="screen-sub">What would you like to do?</p>
+          <div class="menu-grid">
+            <button class="menu-item" data-go="balance"><span class="ic">◈</span><span class="lbl">Check Balance</span></button>
+            <button class="menu-item" data-go="withdraw"><span class="ic">↑</span><span class="lbl">Withdraw Cash</span></button>
+            <button class="menu-item" data-go="deposit"><span class="ic">↓</span><span class="lbl">Deposit Cash</span></button>
+            <button class="menu-item" data-go="history"><span class="ic">≡</span><span class="lbl">Mini Statement</span></button>
+            <button class="menu-item" data-go="pin"><span class="ic">✦</span><span class="lbl">Change PIN</span></button>
+            <button class="menu-item" data-go="eject"><span class="ic">⏏</span><span class="lbl">Eject Card</span></button>
+          </div>
+        </div>
+
+        <!-- BALANCE -->
+        <div class="view" id="view-balance">
+          <p class="screen-title">ACCOUNT BALANCE</p>
+          <p class="screen-sub">Savings account, available balance</p>
+          <div class="balance-amount" id="balance-amount">Rs. 0.00</div>
+          <div class="balance-caption">as of just now</div>
+          <div class="footer-btns" style="margin-top:auto;">
+            <button class="btn-secondary" data-go="menu">Back to menu</button>
+            <button class="btn-primary" data-go="eject">Eject card</button>
+          </div>
+        </div>
+
+        <!-- WITHDRAW -->
+        <div class="view" id="view-withdraw">
+          <p class="screen-title">WITHDRAW CASH</p>
+          <p class="screen-sub">Select or enter an amount.</p>
+          <div class="field">
+            <label>QUICK AMOUNTS</label>
+            <div class="amount-chips" id="wd-chips">
+              <button class="chip-btn" data-amt="500">Rs. 500</button>
+              <button class="chip-btn" data-amt="1000">Rs. 1,000</button>
+              <button class="chip-btn" data-amt="2000">Rs. 2,000</button>
+              <button class="chip-btn" data-amt="5000">Rs. 5,000</button>
+            </div>
+            <label>OR ENTER AMOUNT</label>
+            <input class="amount-input" id="wd-input" type="number" placeholder="0" min="0" step="100">
+          </div>
+          <div class="error-text" id="wd-error"></div>
+          <div class="footer-btns" style="margin-top:auto;">
+            <button class="btn-secondary" data-go="menu">Cancel</button>
+            <button class="btn-primary" id="wd-confirm">Withdraw</button>
+          </div>
+        </div>
+
+        <!-- DEPOSIT -->
+        <div class="view" id="view-deposit">
+          <p class="screen-title">DEPOSIT CASH</p>
+          <p class="screen-sub">Insert notes into the tray, then confirm the amount.</p>
+          <div class="field">
+            <label>AMOUNT TO DEPOSIT</label>
+            <input class="amount-input" id="dep-input" type="number" placeholder="0" min="0" step="10">
+          </div>
+          <div class="error-text" id="dep-error"></div>
+          <div class="footer-btns" style="margin-top:auto;">
+            <button class="btn-secondary" data-go="menu">Cancel</button>
+            <button class="btn-primary" id="dep-confirm">Deposit</button>
+          </div>
+        </div>
+
+        <!-- DISPENSING -->
+        <div class="view" id="view-dispense">
+          <p class="screen-title">DISPENSING CASH</p>
+          <p class="screen-sub" id="dispense-sub">Please collect your cash below.</p>
+          <div class="dispenser-wrap">
+            <div class="cash-stack" id="cash-stack"></div>
+            <button class="btn-primary take-cash-btn" data-go="menu">Take Cash &amp; Continue</button>
+          </div>
+        </div>
+
+        <!-- HISTORY -->
+        <div class="view" id="view-history">
+          <p class="screen-title">MINI STATEMENT</p>
+          <p class="screen-sub">Last transactions on this account</p>
+          <ul class="history-list" id="history-list"></ul>
+          <div class="footer-btns" style="margin-top:14px;">
+            <button class="btn-secondary" data-go="menu" style="width:100%;">Back to menu</button>
+          </div>
+        </div>
+
+        <!-- CHANGE PIN -->
+        <div class="view" id="view-changepin">
+          <p class="screen-title">CHANGE PIN</p>
+          <p class="screen-sub" id="cp-step-label">Enter a new 4-digit PIN.</p>
+          <div class="pin-dots" id="cp-dots">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+          </div>
+          <div class="error-text" id="cp-error"></div>
+          <div class="keypad">
+            <button class="key" data-ck="1">1</button><button class="key" data-ck="2">2</button><button class="key" data-ck="3">3</button>
+            <button class="key" data-ck="4">4</button><button class="key" data-ck="5">5</button><button class="key" data-ck="6">6</button>
+            <button class="key" data-ck="7">7</button><button class="key" data-ck="8">8</button><button class="key" data-ck="9">9</button>
+            <button class="key wide" data-ck="cancel">CANCEL</button><button class="key" data-ck="0">0</button><button class="key wide" data-ck="back">⌫</button>
+          </div>
+        </div>
+
+        <!-- EJECTING -->
+        <div class="view" id="view-eject">
+          <div style="margin:auto; text-align:center;">
+            <p class="screen-title" style="text-align:center;">THANK YOU</p>
+            <p class="screen-sub">Please take your card.</p>
+            <div class="slot" style="margin: 18px auto 0;"><div class="card" id="card-eject" style="bottom:4px;"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="physical-keypad">
+      <div class="pkey"></div><div class="pkey"></div><div class="pkey"></div><div class="pkey"></div>
+      <div class="pkey"></div><div class="pkey"></div><div class="pkey"></div><div class="pkey"></div>
+    </div>
+  </div>
+
+  <p class="lobby-caption">Demo ATM — card data is preloaded for this session and stored only in your browser tab.<br>No real money, no real bank.</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
